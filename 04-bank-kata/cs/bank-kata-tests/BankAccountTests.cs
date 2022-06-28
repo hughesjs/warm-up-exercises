@@ -28,14 +28,18 @@ public class BankAccountTests
 	[Fact]
 	public void ShouldOutputCorrectStatement()
 	{
-		const string expectedString = "DATE       | AMOUNT  | BALANCE\n10/04/2014 | 500.00  | 1400.00\n02/04/2014 | -100.00 | 900.00\n01/04/2014 | 1000.00 | 1000.00";
-
+		// Should really be abstracting a datetime provider but this'll do...
+		string expectedString = $"DATE       | AMOUNT  | BALANCE\n{DateTime.UtcNow:dd/MM/yyyy} | 500.00  | 1400.00\n{DateTime.UtcNow:dd/MM/yyyy} | -100.00 | 900.00 \n{DateTime.UtcNow:dd/MM/yyyy} | 1000.00 | 1000.00\n";
 		byte[] expectedBytes = Encoding.UTF8.GetBytes(expectedString);
 		
 		_stream.Write(Arg.Do<byte[]>(b =>
 		{
 			b.ShouldBeEquivalentTo(expectedBytes);
 		}), 0, expectedBytes.Length);
+		
+		_account.Deposit(1000);
+		_account.Withdraw(100);
+		_account.Deposit(500);
 		
 		_account.PrintStatement();
 		
