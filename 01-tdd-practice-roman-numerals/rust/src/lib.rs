@@ -1,15 +1,18 @@
 fn covert_from_roman(roman: &str) -> i32 {
+    return convert_single_digit(roman.chars().next().unwrap())
+}
+
+fn convert_single_digit(roman: char) -> i32 {
     return match roman{
-        "I" => 1,
-        "V" => 5,
-        "X" => 10,
-        "L" => 50,
-        "C" => 100,
-        "D" => 500,
-        "M" => 1000,
-        &_ => 0
+        'I' => 1,
+        'V' => 5,
+        'X' => 10,
+        'L' => 50,
+        'C' => 100,
+        'D' => 500,
+        'M' => 1000,
+        _ => 0
     };
-    panic!();
 }
 
 
