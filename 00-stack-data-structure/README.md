@@ -1,4 +1,4 @@
-## Exercise 01 - Warm up
+## Exercise 00 - Stack Data Structure
 
 Implement a Stack class with the following public methods:
 - void push(Object object)
