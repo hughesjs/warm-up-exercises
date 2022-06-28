@@ -6,22 +6,18 @@ namespace bank_kata;
 public class BankAccount: IBankAccount
 {
 	private readonly Stream _outputStream;
+	private readonly ITransactionRepository _transactionRepository;
 
-	public BankAccount(Stream outputStream)
+	public BankAccount(Stream outputStream, ITransactionRepository transactionRepository)
 	{
 		_outputStream = outputStream;
+		_transactionRepository = transactionRepository;
 	}
 
 
-	public void Deposit(int amount)
-	{
-		throw new NotImplementedException();
-	}
+	public void Deposit(int amount) => _transactionRepository.AddTransaction(new(DateTime.UtcNow, amount));
 
-	public void Withdraw(int amount)
-	{
-		throw new NotImplementedException();
-	}
+	public void Withdraw(int amount) => _transactionRepository.AddTransaction(new(DateTime.UtcNow, -amount));
 
 	public void PrintStatement()
 	{
