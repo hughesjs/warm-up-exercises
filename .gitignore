@@ -1,1 +1,4 @@
 **/rust/target
+**/cs/**/obj/**
+**/cs/**/.idea/**
+**/cs/**/bin/**
