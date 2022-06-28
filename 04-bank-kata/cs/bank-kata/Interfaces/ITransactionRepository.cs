@@ -5,5 +5,5 @@ namespace bank_kata.Interfaces;
 public interface ITransactionRepository
 {
 	public void AddTransaction(Transaction transaction);
-	public IReadOnlyList<Transaction> GetTransactions(int userId);
+	public IReadOnlyList<Transaction> GetTransactions();
 }

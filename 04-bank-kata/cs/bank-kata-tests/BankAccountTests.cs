@@ -1,9 +1,10 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using bank_kata;
 using bank_kata.Interfaces;
-using bank_kata.Models;
+using bank_kata.Repositories;
 using NSubstitute;
 using NSubstitute.ReceivedExtensions;
 using Shouldly;
@@ -20,7 +21,7 @@ public class BankAccountTests
 	public BankAccountTests()
 	{
 		_stream = Substitute.For<Stream>();
-		_transactionRepository = Substitute.For<ITransactionRepository>();
+		_transactionRepository = new InMemoryTransactionRepository();
 		_account = new BankAccount(_stream, _transactionRepository);
 	}
 	
@@ -46,15 +47,11 @@ public class BankAccountTests
 	{
 		const int amount = 100;
 
-		_transactionRepository.AddTransaction(Arg.Do<Transaction>(t =>
-		{
-			t.Amount.ShouldBe(-amount);
-			(DateTime.UtcNow - t.TxTime).TotalSeconds.ShouldBeLessThan(1); // Essentially now
-		}));
-		
 		_account.Withdraw(amount);
 		
-		_transactionRepository.Received(Quantity.Exactly(1)).AddTransaction(Arg.Any<Transaction>());
+		_transactionRepository.GetTransactions()
+			.Single(t => t.Amount == -amount && (DateTime.UtcNow - t.TxTime).TotalSeconds < 1)
+			.ShouldNotBeNull();
 	}
 	
 	[Fact]
@@ -62,14 +59,10 @@ public class BankAccountTests
 	{
 		const int amount = 100;
 		
-		_transactionRepository.AddTransaction(Arg.Do<Transaction>(t =>
-		{
-			t.Amount.ShouldBe(amount);
-			(DateTime.UtcNow - t.TxTime).TotalSeconds.ShouldBeLessThan(1); // Essentially now
-		}));
-		
 		_account.Deposit(amount);
 		
-		_transactionRepository.Received(Quantity.Exactly(1)).AddTransaction(Arg.Any<Transaction>());
+		_transactionRepository.GetTransactions()
+			.Single(t => t.Amount == amount && (DateTime.UtcNow - t.TxTime).TotalSeconds < 1)
+			.ShouldNotBeNull();
 	}
 }
